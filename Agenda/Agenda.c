@@ -50,6 +50,7 @@ void search(){
     *getSecondInt() = 0;
     printf("Name to search:\n");
     scanf("%[^\n]s",getFirstString());
+    getchar();
     for((*x) = 0;(*x)<(*getQtdPessoas());(*x)++){
         char *nome = &pBuffer[start+((*x)*per)+sizeof(int)];
         int *numero = &pBuffer[start+((*x)*per)];
