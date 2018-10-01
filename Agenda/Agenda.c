@@ -4,15 +4,18 @@
 
 //Tamanho de alocação de uma string
 #define tamanhoString 32
-//0 = Numero de entries, 1,2 = Ints para usar em leituras/for
-#define ints 3
+//0 = Numero de entries, 1,2,3 = Ints para usar em leituras/for
+#define ints 4
 // Uma string para usar em leituras
 #define strings 1
 #define start ((sizeof(int)*ints)+(strings*tamanhoString))
-//Tamanho por entry na agenda
-#define per (sizeof(int)+tamanhoString)
 
 //Está pré entendido que o maximo de leitura é tamanhoString caracteres
+
+typedef struct Pessoa{
+    char nome[tamanhoString];
+    int numero;
+}pessoa;
 
 
 void *pBuffer;
@@ -27,9 +30,15 @@ int* getFirstInt(){
 int* getSecondInt(){
     return &pBuffer[sizeof(int)*2];
 }
+int* getThirdInt(){
+    return &pBuffer[sizeof(int)*3];
+}
 
 int* getQtdPessoas(){
     return &pBuffer[0];
+}
+pessoa* getPessoa(int *index){
+  return &pBuffer[start+((*index)*sizeof(pessoa))];
 }
 
 void printHelp(){
@@ -38,7 +47,7 @@ void printHelp(){
 int nomeExiste(char* nome){
     int *x = getFirstInt();
     for((*x) = 0;(*x)<(*getQtdPessoas());(*x)++){
-      if(strcmp(nome,&pBuffer[start+((*x)*per)+sizeof(int)])==0){
+      if(strcmp(nome,getPessoa(x)->nome)==0){
         return 1;
       }
     }
@@ -52,12 +61,10 @@ void search(){
     scanf("%[^\n]s",getFirstString());
     getchar();
     for((*x) = 0;(*x)<(*getQtdPessoas());(*x)++){
-        char *nome = &pBuffer[start+((*x)*per)+sizeof(int)];
-        int *numero = &pBuffer[start+((*x)*per)];
-        //Checa se a strign de entrada esta contida no nome do contato
-        if(strstr(nome,getFirstString())!=NULL){
+        pessoa *p = getPessoa(x);
+        if(strstr(p->nome,getFirstString())!=NULL){
             (*getSecondInt())++;
-            printf("%d - %s : %d\n",*getSecondInt(),nome,*numero);
+            printf("%d - %s : %d\n",*getSecondInt(),p->nome,p->numero);
         }
     }
     printf("%d found!\n",*getSecondInt());
@@ -66,7 +73,7 @@ void search(){
 }
 
 void addPessoa(){
-    pBuffer = realloc(pBuffer,start+(((*getQtdPessoas()) + 1) * per));
+    pBuffer = realloc(pBuffer,start+(((*getQtdPessoas()) + 1) * sizeof(pessoa)));
     printf("Enter entry name:\n");
     scanf("%[^\n]s",getFirstString());
     getchar();
@@ -77,10 +84,10 @@ void addPessoa(){
     printf("Enter entry number:\n");
     scanf("%d",getFirstInt());
     getchar();
-    int *number = &pBuffer[start+(*getQtdPessoas() * per)];
-    *number = *getFirstInt();
-    char *name = &pBuffer[start+(*getQtdPessoas() * per) +sizeof(int)];
-    strcpy(name,getFirstString());
+
+    pessoa *p = getPessoa(getQtdPessoas());
+    p->numero = *getFirstInt();
+    strcpy(p->nome,getFirstString());
     (*getQtdPessoas())++;
     printf("Added number!\n");
 }
@@ -92,21 +99,20 @@ void removePessoa(){
     getchar();
     *getFirstInt() = 0;
     for((*x) = 0;(*x)<(*getQtdPessoas());(*x)++){
-        char *nome = &pBuffer[start+((*x)*per)+sizeof(int)];
-        int *numero = &pBuffer[start+((*x)*per)];
-
+        pessoa *p = getPessoa(x);
         if((*getFirstInt())==1){
-            int *newnumero = &pBuffer[start+(((*x)-1)*per)];
-            *newnumero = *numero;
-            strcpy(&pBuffer[start+(((*x)-1)*per)+sizeof(int)],nome);
-        }else if(strcmp(nome,getFirstString())==0){
+            *getThirdInt() = (*x)-1;
+            pessoa *p1 = getPessoa(getThirdInt());
+            p1->numero = p->numero;
+            strcpy(p1->nome,p->nome);
+        }else if(strcmp(p->nome,getFirstString())==0){
             *getFirstInt() = 1;
         }
     }
     if((*getFirstInt())==1){
         printf("Entry deleted!\n");
         (*getQtdPessoas())--;
-        pBuffer = realloc(pBuffer,start+((*getQtdPessoas()) * per));
+        pBuffer = realloc(pBuffer,start+((*getQtdPessoas()) * sizeof(pessoa)));
     }else{
         printf("Name not found!\n");
     }
@@ -116,9 +122,8 @@ void list(){
     int *x = getFirstInt();
     printf("%d entries.\n",*getQtdPessoas());
     for((*x) = 0;(*x)<(*getQtdPessoas());(*x)++){
-        int *numero = &pBuffer[start+((*x)*per)];
-        char *nome = &pBuffer[start+((*x)*per)+sizeof(int)];
-        printf("%d - %s : %d\n",(*x)+1,nome,*numero);
+        pessoa *p = getPessoa(x);
+        printf("%d - %s : %d\n",(*x)+1,p->nome,p->numero);
     }
 }
 
