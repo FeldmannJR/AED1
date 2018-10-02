@@ -4,11 +4,7 @@
 
 //Tamanho de alocação de uma string
 #define tamanhoString 32
-//0 = Numero de entries, 1,2,3 = Ints para usar em leituras/for
-#define ints 4
-// Uma string para usar em leituras
-#define strings 1
-#define start ((sizeof(int)*ints)+(strings*tamanhoString))
+
 
 //Está pré entendido que o maximo de leitura é tamanhoString caracteres
 
@@ -17,36 +13,42 @@ typedef struct Pessoa{
     int numero;
 }pessoa;
 
+typedef struct Vars{
+    int qtd;
+    int x;
+    int y;
+    int z;
+    int tmp;
+    char str[tamanhoString];
+}vars;
+
 
 void *pBuffer;
+vars *v;
 
-char* getFirstString(){
-    return &pBuffer[ints*sizeof(int)];
-}
-
-int* getFirstInt(){
-    return &pBuffer[sizeof(int)];
-}
-int* getSecondInt(){
-    return &pBuffer[sizeof(int)*2];
-}
-int* getThirdInt(){
-    return &pBuffer[sizeof(int)*3];
-}
-
-int* getQtdPessoas(){
-    return &pBuffer[0];
-}
 pessoa* getPessoa(int *index){
-  return &pBuffer[start+((*index)*sizeof(pessoa))];
+  return &pBuffer[sizeof(vars)+((*index)*sizeof(pessoa))];
 }
+//SORT
+
+void insertSort(){
+    for((*x)=1;(*x)<(*getQtdPessoas());(*x)++){
+        *y = (*x)-1;
+        while()
+    }
+}
+
+int nameGreaterThen(char* n1,char *n2){
+
+
+}
+
 
 void printHelp(){
     printf("Available commands: add | remove | list | search | exit\n");
 }
 int nomeExiste(char* nome){
-    int *x = getFirstInt();
-    for((*x) = 0;(*x)<(*getQtdPessoas());(*x)++){
+    for(v->x = 0; v->x < v->qtd; v->x++){
       if(strcmp(nome,getPessoa(x)->nome)==0){
         return 1;
       }
@@ -55,64 +57,64 @@ int nomeExiste(char* nome){
 }
 
 void search(){
-    int *x = getFirstInt();
-    *getSecondInt() = 0;
     printf("Name to search:\n");
-    scanf("%[^\n]s",getFirstString());
+    scanf("%[^\n]s",v->str);
     getchar();
-    for((*x) = 0;(*x)<(*getQtdPessoas());(*x)++){
+    v->y = 0;
+    for(v->x = 0; v->x < v->qtd; v->x++){
         pessoa *p = getPessoa(x);
-        if(strstr(p->nome,getFirstString())!=NULL){
-            (*getSecondInt())++;
-            printf("%d - %s : %d\n",*getSecondInt(),p->nome,p->numero);
+        if(strstr(p->nome,v->str)=NULL){
+            v->y++;
+            printf("%d - %s : %d\n",v->y,p->nome,p->numero);
         }
     }
-    printf("%d found!\n",*getSecondInt());
+    printf("%d found!\n",v->y);
     return 0;
 
 }
 
 void addPessoa(){
-    pBuffer = realloc(pBuffer,start+(((*getQtdPessoas()) + 1) * sizeof(pessoa)));
+    pBuffer = realloc(pBuffer,sizeof(vars)+(((*getQtdPessoas()) + 1) * sizeof(pessoa)));
+    v = &pBuffer[0];
     printf("Enter entry name:\n");
-    scanf("%[^\n]s",getFirstString());
+    scanf("%[^\n]s",v->str);
     getchar();
-    if(nomeExiste(getFirstString())){
+    if(nomeExiste(v->str)){
         printf("Already have this name.\n");
         return;
     }
     printf("Enter entry number:\n");
-    scanf("%d",getFirstInt());
+    scanf("%d",v->x);
     getchar();
 
     pessoa *p = getPessoa(getQtdPessoas());
-    p->numero = *getFirstInt();
-    strcpy(p->nome,getFirstString());
-    (*getQtdPessoas())++;
+    p->numero = v->x;
+    strcpy(p->nome,v->str);
+    v->qtd++;
     printf("Added number!\n");
 }
 
 void removePessoa(){
-    int *x = getSecondInt();
     printf("Enter name to remove:\n");
-    scanf("%[^\n]s",getFirstString());
+    scanf("%[^\n]s",v->str);
     getchar();
-    *getFirstInt() = 0;
-    for((*x) = 0;(*x)<(*getQtdPessoas());(*x)++){
-        pessoa *p = getPessoa(x);
-        if((*getFirstInt())==1){
-            *getThirdInt() = (*x)-1;
-            pessoa *p1 = getPessoa(getThirdInt());
+    v->y = 0;
+    for(v->x = 0;v->x < v->qtd; v->x++){
+        pessoa *p = getPessoa(&v->x);
+        if(v->y==1){
+            v->z = v->x-1;
+            pessoa *p1 = getPessoa(v->z);
             p1->numero = p->numero;
             strcpy(p1->nome,p->nome);
-        }else if(strcmp(p->nome,getFirstString())==0){
-            *getFirstInt() = 1;
+        }else if(strcmp(p->nome,v->str)==0){
+            v->y = 1;
         }
     }
-    if((*getFirstInt())==1){
+    if(v->y==1){
         printf("Entry deleted!\n");
-        (*getQtdPessoas())--;
+        v->qtd--;
         pBuffer = realloc(pBuffer,start+((*getQtdPessoas()) * sizeof(pessoa)));
+        v = &pBuffer[0];
     }else{
         printf("Name not found!\n");
     }
@@ -129,6 +131,7 @@ void list(){
 
 int main(){
     pBuffer = malloc(start);
+    v = &pBuffer[0];
     *getQtdPessoas() = 0;
     printHelp();
     while(1){
