@@ -2,11 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+//Preprocessor min function para não usar variaveis
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+
 //Tamanho de alocação de uma string
 #define tamanhoString 32
-
-
 //Está pré entendido que o maximo de leitura é tamanhoString caracteres
+
+
 
 typedef struct Pessoa{
     char nome[tamanhoString];
@@ -18,28 +22,21 @@ typedef struct Vars{
     int x;
     int y;
     int z;
-    int tmp;
+    int a;
+    int b;
+    int c;
+    pessoa temp;
     char str[tamanhoString];
 }vars;
 
+int nameGreaterThen(char* n1,char *n2);
+void insertSort();
 
 void *pBuffer;
 vars *v;
 
 pessoa* getPessoa(int *index){
   return &pBuffer[sizeof(vars)+((*index)*sizeof(pessoa))];
-}
-
-//SORT
-void insertSort(){
-    for((v->x)=1;v->x<v->qtd;v->x++){
-        v->y = v->x-1;
-    }
-}
-
-int nameGreaterThen(char* n1,char *n2){
-
-
 }
 
 
@@ -91,6 +88,7 @@ void addPessoa(){
     strcpy(p->nome,v->str);
     v->qtd++;
     printf("Added number!\n");
+    insertSort();
 }
 
 void removePessoa(){
@@ -151,6 +149,40 @@ int main(){
             printf("Command not found!\n");
             printHelp();
         }
-
     }
 }
+
+//Sort functions
+
+//Insert sort
+void insertSort(){
+    for(v->x=1;v->x<v->qtd;v->x++){
+        v->y = v->x-1;
+        v->temp = *getPessoa(&v->x);
+        while(v->y >= 0 && (nameGreaterThen(getPessoa(&v->y)->nome,v->temp.nome))){
+            v->z = v->y+1;
+            strcpy(getPessoa(&v->z)->nome,getPessoa(&v->y)->nome);
+            getPessoa(&v->z)->numero = getPessoa(&v->y)->numero;
+            v->y--;
+        }
+        v->z = v->y+1;
+        strcpy(getPessoa(&v->z)->nome,v->temp.nome);
+        getPessoa(&v->z)->numero = v->temp.numero;
+    }
+}
+//Function to compare strings and return 1 if n1 is grater then n2
+int nameGreaterThen(char* n1,char *n2){
+    v->b = MIN(strlen(n1),strlen(n2));
+    for(v->a = 0;v->a < v->b;v->a++){
+        if(n1[v->a]>n2[v->a]){
+            return 1;
+        }else if(n1[v->a] < n2[v->a]){
+            return 0;
+        }
+    }
+    if(strlen(n1)>strlen(n2)){
+        return 1;
+    }
+    return 0;
+}
+
