@@ -10,8 +10,7 @@
 #define tamanhoString 32
 //Está pré entendido que o maximo de leitura é tamanhoString caracteres
 
-
-
+//Structs
 typedef struct Pessoa{
     char nome[tamanhoString];
     int numero;
@@ -31,12 +30,15 @@ typedef struct Vars{
     char str[tamanhoString];
 }vars;
 
+//Header das funções
 int nameGreaterThen(char* n1,char *n2);
+void copy(pessoa*,pessoa*);
 void sort();
 void insertSort();
 void selectSort();
+void bubbleSort();
 
-
+//Variaveis
 void *pBuffer;
 vars *v;
 
@@ -158,9 +160,42 @@ int main(){
 }
 
 //Sort functions
-
 void sort(){
-    selectSort();
+    printf("Sort algorithm : insert | select | bubble\n");
+    scanf("%s",v->str);
+    getchar();
+    if(strcmp(v->str,"insert")==0){
+        insertSort();
+    }else if(strcmp(v->str,"select")==0){
+        selectSort();
+    }else if(strcmp(v->str,"bubble")==0){
+        bubbleSort();
+    }else{
+        printf("Option not found using insert!\n");
+        insertSort();
+    }
+}
+
+void copy(pessoa *dest, pessoa *src){
+    strcpy(dest->nome,src->nome);
+    dest->numero = src->numero;
+}
+
+void bubbleSort(){
+    //Percorrendo todos elementos
+    for(v->x=0;v->x<v->qtd-1;v->x++){
+        //Percorrendo todos elementos menos até onde não foi ordenado
+        for(v->y = 0;v->y < v->qtd-v->x-1;v->y++){
+            v->z = v->y+1;
+            //Verificando se o nome do atual é maior que o proximo
+            if(nameGreaterThen(getPessoa(&v->y)->nome,getPessoa(&v->z)->nome)){
+                //se for ele troca de lugar eles
+                v->temp = *getPessoa(&v->y);
+                copy(getPessoa(&v->y),getPessoa(&v->z));
+                copy(getPessoa(&v->z),&v->temp);
+            }
+        }
+    }
 }
 
 //Insert sort
@@ -170,13 +205,11 @@ void insertSort(){
         v->temp = *getPessoa(&v->x);
         while(v->y >= 0 && (nameGreaterThen(getPessoa(&v->y)->nome,v->temp.nome))){
             v->z = v->y+1;
-            strcpy(getPessoa(&v->z)->nome,getPessoa(&v->y)->nome);
-            getPessoa(&v->z)->numero = getPessoa(&v->y)->numero;
+            copy(getPessoa(&v->z),getPessoa(&v->y));
             v->y--;
         }
         v->z = v->y+1;
-        strcpy(getPessoa(&v->z)->nome,v->temp.nome);
-        getPessoa(&v->z)->numero = v->temp.numero;
+        copy(getPessoa(&v->z),&v->temp);
     }
 }
 
@@ -193,11 +226,9 @@ void selectSort(){
         //Copiando a pessoa X para o temp
         v->temp = *getPessoa(&v->x);
         //Passando o valor minimo para o X
-        strcpy(getPessoa(&v->x)->nome,getPessoa(&v->y)->nome);
-        getPessoa(&v->x)->numero = getPessoa(&v->y)->numero;
+        copy(getPessoa(&v->x),getPessoa(&v->y));
         //Passando o valor de temp para onde estava o minimo
-        strcpy(getPessoa(&v->y)->nome,v->temp.nome);
-        getPessoa(&v->y)->numero = v->temp.numero;
+        copy(getPessoa(&v->y),&v->temp);
     }
 }
 
@@ -216,4 +247,3 @@ int nameGreaterThen(char* n1,char *n2){
     }
     return 0;
 }
-
