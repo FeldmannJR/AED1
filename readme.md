@@ -8,3 +8,7 @@
 
 #### Compilador
   > _[GCC](https://gcc.gnu.org/)_
+
+#### Testado nos sistemas
+ * Ubuntu 18.04(x64)
+ * Ubuntu 16.04(x64)

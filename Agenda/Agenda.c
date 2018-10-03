@@ -18,7 +18,9 @@ typedef struct Pessoa{
 }pessoa;
 
 typedef struct Vars{
+    //Salva quantos entries tem na agenda
     int qtd;
+    //Usados em funções
     int x;
     int y;
     int z;
@@ -30,7 +32,10 @@ typedef struct Vars{
 }vars;
 
 int nameGreaterThen(char* n1,char *n2);
+void sort();
 void insertSort();
+void selectSort();
+
 
 void *pBuffer;
 vars *v;
@@ -39,10 +44,6 @@ pessoa* getPessoa(int *index){
   return &pBuffer[sizeof(vars)+((*index)*sizeof(pessoa))];
 }
 
-
-void printHelp(){
-    printf("Available commands: add | remove | list | search | exit\n");
-}
 int nomeExiste(char* nome){
     for(v->x = 0; v->x < v->qtd; v->x++){
       if(strcmp(nome,getPessoa(&v->x)->nome)==0){
@@ -88,7 +89,7 @@ void addPessoa(){
     strcpy(p->nome,v->str);
     v->qtd++;
     printf("Added number!\n");
-    insertSort();
+    sort();
 }
 
 void removePessoa(){
@@ -125,6 +126,10 @@ void list(){
     }
 }
 
+void printHelp(){
+    printf("Available commands: add | remove | list | search | exit\n");
+}
+
 int main(){
     pBuffer = malloc(sizeof(vars));
     v = &pBuffer[0];
@@ -154,6 +159,10 @@ int main(){
 
 //Sort functions
 
+void sort(){
+    selectSort();
+}
+
 //Insert sort
 void insertSort(){
     for(v->x=1;v->x<v->qtd;v->x++){
@@ -170,6 +179,28 @@ void insertSort(){
         getPessoa(&v->z)->numero = v->temp.numero;
     }
 }
+
+void selectSort(){
+    //Percorrendo todas as pessoas
+    for(v->x =0;v->x<v->qtd;v->x++){
+        //Achando o minimo
+        v->y = v->x;
+        for(v->z = v->x+1;v->z < v->qtd;v->z++){
+            if(nameGreaterThen(getPessoa(&v->y)->nome,getPessoa(&v->z)->nome)){
+                v->y = v->z;
+            }
+        }
+        //Copiando a pessoa X para o temp
+        v->temp = *getPessoa(&v->x);
+        //Passando o valor minimo para o X
+        strcpy(getPessoa(&v->x)->nome,getPessoa(&v->y)->nome);
+        getPessoa(&v->x)->numero = getPessoa(&v->y)->numero;
+        //Passando o valor de temp para onde estava o minimo
+        strcpy(getPessoa(&v->y)->nome,v->temp.nome);
+        getPessoa(&v->y)->numero = v->temp.numero;
+    }
+}
+
 //Function to compare strings and return 1 if n1 is grater then n2
 int nameGreaterThen(char* n1,char *n2){
     v->b = MIN(strlen(n1),strlen(n2));
