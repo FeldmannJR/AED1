@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 
 //Preprocessor min function para não usar variaveis
@@ -37,6 +38,7 @@ void sort();
 void insertSort();
 void selectSort();
 void bubbleSort();
+int personGreaterThen(int p1,int p2);
 
 //Variaveis
 void *pBuffer;
@@ -134,6 +136,7 @@ void printHelp(){
 
 int main(){
     pBuffer = malloc(sizeof(vars));
+    srand(time(NULL));
     v = &pBuffer[0];
     v->qtd = 0;
     printHelp();
@@ -159,9 +162,22 @@ int main(){
     }
 }
 
+
+void copy(pessoa *dest, pessoa *src){
+    strcpy(dest->nome,src->nome);
+    dest->numero = src->numero;
+}
+
+void troca(int pos1,int pos2){
+    v->temp = *getPessoa(&pos1);
+    copy(getPessoa(&pos1),getPessoa(&pos2));
+    copy(getPessoa(&pos2),&v->temp);
+}
+
+
 //Sort functions
 void sort(){
-    printf("Sort algorithm : insert | select | bubble\n");
+    printf("Sort algorithm : insert | select | bubble | quick\n");
     scanf("%s",v->str);
     getchar();
     if(strcmp(v->str,"insert")==0){
@@ -170,15 +186,40 @@ void sort(){
         selectSort();
     }else if(strcmp(v->str,"bubble")==0){
         bubbleSort();
-    }else{
+    }else if(strcmp(v->str,"quick")==0){
+        quickSort(0,v->qtd-1);
+    }
+    else{
         printf("Option not found using insert!\n");
         insertSort();
     }
 }
 
-void copy(pessoa *dest, pessoa *src){
-    strcpy(dest->nome,src->nome);
-    dest->numero = src->numero;
+void quickSort(int start,int end){
+    if(end-start <=1)return;
+    v->c = rand()%(end-start);
+    v->a = start;
+    v->b = end;
+    do{
+        while(personGreaterThen(v->c,v->a)){
+            v->a++;
+        }
+        while(personGreaterThen(v->b,v->c)){
+            v->b--;
+        }
+        if(v->a <= v->b){
+            troca(v->a,v->b);
+            v->a++;
+            v->b--;
+        }
+    }while(v->a <= v->b);
+    if(start < v->b){
+        quickSort(start,v->b);
+    }
+    if(v->a < end){
+        quickSort(v->a,end);
+    }
+
 }
 
 void bubbleSort(){
@@ -232,6 +273,9 @@ void selectSort(){
     }
 }
 
+int personGreaterThen(int p1,int p2){
+    return nameGreaterThen(getPessoa(&p1)->nome,getPessoa(&p2)->nome);
+}
 //Function to compare strings and return 1 if n1 is grater then n2
 int nameGreaterThen(char* n1,char *n2){
     v->b = MIN(strlen(n1),strlen(n2));

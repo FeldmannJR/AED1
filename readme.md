@@ -1,5 +1,5 @@
 # Algoritmos e Estruturas de Dados I
-### 2018/2
+### UFPEL 2018/2
 #### Professor
   > Rafael Piccin Torchelsen
 

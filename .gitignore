@@ -5,3 +5,4 @@
 *.depend
 bin/
 obj/
+*.layout
