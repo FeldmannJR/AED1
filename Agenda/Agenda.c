@@ -29,6 +29,7 @@ typedef struct Vars{
     int c;
     pessoa temp;
     char str[tamanhoString];
+
 }vars;
 
 //Header das funções
@@ -75,7 +76,7 @@ void search(){
 }
 
 void addPessoa(){
-    pBuffer = realloc(pBuffer,sizeof(vars)+((v->qtd + 1) * sizeof(pessoa)));
+    pBuffer = realloc(pBuffer,sizeof(vars)+((v->qtd + 1) * (sizeof(pessoa)+sizeof(int))));
     v = &pBuffer[0];
     printf("Enter entry name:\n");
     scanf("%[^\n]s",v->str);
@@ -115,7 +116,7 @@ void removePessoa(){
     if(v->y==1){
         printf("Entry deleted!\n");
         v->qtd--;
-        pBuffer = realloc(pBuffer,sizeof(vars)+(v->qtd * sizeof(pessoa)));
+        pBuffer = realloc(pBuffer,sizeof(vars)+(v->qtd * (sizeof(pessoa)+sizeof(int))));
         v = &pBuffer[0];
     }else{
         printf("Name not found!\n");
@@ -195,6 +196,17 @@ void sort(){
     }
 }
 
+
+void startMergeSort(){
+    for(v->x = 0;v->x < v->qtd;v->x++){
+        pBuffer[(sizeof(Vars)+sizeof(Pessoa)*v->qtd)] = v->x;
+    }
+}
+void mergeSort(){
+
+
+
+}
 void quickSort(int start,int end){
     if(end-start <=1)return;
     v->c = rand()%(end-start);
@@ -231,9 +243,7 @@ void bubbleSort(){
             //Verificando se o nome do atual é maior que o proximo
             if(nameGreaterThen(getPessoa(&v->y)->nome,getPessoa(&v->z)->nome)){
                 //se for ele troca de lugar eles
-                v->temp = *getPessoa(&v->y);
-                copy(getPessoa(&v->y),getPessoa(&v->z));
-                copy(getPessoa(&v->z),&v->temp);
+                troca(v->y,v->z);
             }
         }
     }
@@ -264,12 +274,7 @@ void selectSort(){
                 v->y = v->z;
             }
         }
-        //Copiando a pessoa X para o temp
-        v->temp = *getPessoa(&v->x);
-        //Passando o valor minimo para o X
-        copy(getPessoa(&v->x),getPessoa(&v->y));
-        //Passando o valor de temp para onde estava o minimo
-        copy(getPessoa(&v->y),&v->temp);
+        troca(v->x,v->y);
     }
 }
 
