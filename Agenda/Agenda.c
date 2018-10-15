@@ -29,7 +29,9 @@ typedef struct Vars{
     int c;
     pessoa temp;
     char str[tamanhoString];
-
+    //Variaveis para comparação
+    int i;
+    int j;
 }vars;
 
 //Header das funções
@@ -76,7 +78,7 @@ void search(){
 }
 
 void addPessoa(){
-    pBuffer = realloc(pBuffer,sizeof(vars)+((v->qtd + 1) * (sizeof(pessoa)+sizeof(int))));
+    pBuffer = realloc(pBuffer,sizeof(vars)+((v->qtd + 1) * (sizeof(pessoa))));
     v = &pBuffer[0];
     printf("Enter entry name:\n");
     scanf("%[^\n]s",v->str);
@@ -94,7 +96,6 @@ void addPessoa(){
     strcpy(p->nome,v->str);
     v->qtd++;
     printf("Added number!\n");
-    sort();
 }
 
 void removePessoa(){
@@ -116,7 +117,7 @@ void removePessoa(){
     if(v->y==1){
         printf("Entry deleted!\n");
         v->qtd--;
-        pBuffer = realloc(pBuffer,sizeof(vars)+(v->qtd * (sizeof(pessoa)+sizeof(int))));
+        pBuffer = realloc(pBuffer,sizeof(vars)+(v->qtd * (sizeof(pessoa))));
         v = &pBuffer[0];
     }else{
         printf("Name not found!\n");
@@ -132,7 +133,7 @@ void list(){
 }
 
 void printHelp(){
-    printf("Available commands: add | remove | list | search | exit\n");
+    printf("Available commands: add | remove | list | search | sort | exit\n");
 }
 
 int main(){
@@ -153,6 +154,8 @@ int main(){
             list();
         }else if(strcmp(v->str,"search")==0){
             search();
+        }else if(strcmp(v->str,"sort")==0){
+            sort();
         }else if(strcmp(v->str,"exit")==0){
             printf("Exiting...\n");
             break;
@@ -196,35 +199,75 @@ void sort(){
     }
 }
 
-
+/* Satan me ajuda aqui
 void startMergeSort(){
+    pBuffer = realloc(sizeof(vars)+sizeof(pessoa)*(v->qtd)*2);
+    v = &pBuffer[0];
     for(v->x = 0;v->x < v->qtd;v->x++){
-        pBuffer[(sizeof(Vars)+sizeof(Pessoa)*v->qtd)] = v->x;
+        pessoa *n = (pessoa*)&pBuffer[(sizeof(vars)+sizeof(pessoa)*(v->qtd + v->x)];
+        copy(n,getPessoa(v->x));
+    }
+    mergeSort();
+    pBuffer = realloc(sizeof(vars)+sizeof(pessoa)*(v->qtd));
+    v = pBuffer;
+}
+
+void mergeSort(int l, int r){
+    if(l < r){
+        v->a = (l+r)/2;
+        sort(l,v->a);
+        sort(v->a+1,r);
+
+        merge(l,m,r);
     }
 }
-void mergeSort(){
-
-
+void merge(int l,int m,int l){
+    v->b = m - l + 1;
+    v->c = r -m;
+    v->x = 0;
+    v->y = 0;
+    v->z = l;
+    while(v->x < v->b && v->y < v->c){
+      //   pBuffer = realloc(sizeof(vars)+sizeof(pessoa)*(v->qtd + ));
+    }
 
 }
+*/
+
+/*
+    Quick sort
+    Recursão
+    Ele quebra uma lista em duas listas menores aleatoriamente
+
+*/
 void quickSort(int start,int end){
     if(end-start <=1)return;
+    //Pegando o pivo aleatoriamente
     v->c = rand()%(end-start);
+    //A é a esquerda
     v->a = start;
+    //B é a direita
     v->b = end;
     do{
+        //se o pivot é maior que o da esquerda, empurra pra esquerda
         while(personGreaterThen(v->c,v->a)){
             v->a++;
         }
+        //Caso o pivot seja menor que o da direita, diminui a lista
         while(personGreaterThen(v->b,v->c)){
             v->b--;
         }
+        //Se o da esquerda for maior que o da direita
         if(v->a <= v->b){
+            //Troca
             troca(v->a,v->b);
+
             v->a++;
             v->b--;
         }
+    //Enquanto a esquerda for menor que a direita
     }while(v->a <= v->b);
+
     if(start < v->b){
         quickSort(start,v->b);
     }
@@ -233,7 +276,7 @@ void quickSort(int start,int end){
     }
 
 }
-
+//Por elemento ele verifica se o da direito é menor que o atual, se for troca, ele percorre n^2 vezes
 void bubbleSort(){
     //Percorrendo todos elementos
     for(v->x=0;v->x<v->qtd-1;v->x++){
@@ -249,31 +292,39 @@ void bubbleSort(){
     }
 }
 
-//Insert sort
+//Insert sort = Por elemento ele verifica cada elemento a esquerda dele, até achar um menor, se achar um menor ele bota na frente dele, se n achar menor bota no primeiro slot
 void insertSort(){
+    //Percorre todos os elementos começando pelo SEGUNDO
     for(v->x=1;v->x<v->qtd;v->x++){
+        //Pega o elemento anterior
         v->y = v->x-1;
+        //Pega o elemento atual em forma do contato
         v->temp = *getPessoa(&v->x);
+        //Enquanto ele achar um numero maior a esquerda ele copia ele para direita
         while(v->y >= 0 && (nameGreaterThen(getPessoa(&v->y)->nome,v->temp.nome))){
             v->z = v->y+1;
+            //Troca lugar o lugar dos dois
             copy(getPessoa(&v->z),getPessoa(&v->y));
+            //Vai mais pra esquerda
             v->y--;
         }
+        //O ultimo da esquerda ele copia o valor inicial
         v->z = v->y+1;
         copy(getPessoa(&v->z),&v->temp);
     }
 }
-
+//Percorre cada elemento, achando o minimo na frente dele, ao achar troca o valor do minimo com o atual
 void selectSort(){
     //Percorrendo todas as pessoas
     for(v->x =0;v->x<v->qtd;v->x++){
-        //Achando o minimo
+        //Achando o minimo, apartir da pessoa atual
         v->y = v->x;
         for(v->z = v->x+1;v->z < v->qtd;v->z++){
             if(nameGreaterThen(getPessoa(&v->y)->nome,getPessoa(&v->z)->nome)){
                 v->y = v->z;
             }
         }
+        //Troca a pessoa atual pelo minimo
         troca(v->x,v->y);
     }
 }
@@ -283,11 +334,11 @@ int personGreaterThen(int p1,int p2){
 }
 //Function to compare strings and return 1 if n1 is grater then n2
 int nameGreaterThen(char* n1,char *n2){
-    v->b = MIN(strlen(n1),strlen(n2));
-    for(v->a = 0;v->a < v->b;v->a++){
-        if(n1[v->a]>n2[v->a]){
+    v->j = MIN(strlen(n1),strlen(n2));
+    for(v->i = 0;v->i < v->j;v->i++){
+        if(n1[v->i]>n2[v->i]){
             return 1;
-        }else if(n1[v->a] < n2[v->a]){
+        }else if(n1[v->i] < n2[v->i]){
             return 0;
         }
     }
